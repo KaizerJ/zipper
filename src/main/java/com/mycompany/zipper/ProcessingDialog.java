@@ -1,6 +1,11 @@
 package com.mycompany.zipper;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
+import java.util.zip.*;
 import javax.swing.SwingWorker;
 
 
@@ -11,23 +16,45 @@ public class ProcessingDialog extends javax.swing.JDialog {
     
     class FileZipper extends SwingWorker<Void, Void> {
 
-        private final List<String> inputFilenames;
-        private final String outputFilename;
-
-        public FileZipper(List<String> inputFilenames, String outputFilename){
-            super();
-            this.inputFilenames = inputFilenames;
-            this.outputFilename = outputFilename;
-        }
+        private final static int BUFFER_SIZE = 4096;
         
         @Override
         protected Void doInBackground() throws Exception {
-            System.out.println(this.outputFilename);
+            // Objeto para referenciar el archivo zip de salida
+            try (ZipOutputStream out = new ZipOutputStream(
+                    new BufferedOutputStream(
+                            new FileOutputStream(outputFilename)))) 
+            {
+                // Objeto para referenciar a los archivos que queremos comprimir
+                BufferedInputStream origin = null;
+
+                // Buffer de transferencia para almacenar datos a comprimir
+                byte[] data = new byte[BUFFER_SIZE];
+                
+                int i = 0;
+                int N = inputFilenames.size();
+                for (String filename : inputFilenames) {
+                    FileInputStream fi = new FileInputStream(filename);
+                    origin = new BufferedInputStream(fi, BUFFER_SIZE);
+                    ZipEntry entry = new ZipEntry( filename );
+                    out.putNextEntry( entry );
+                    // Leemos datos desde el archivo origen y se envían al archivo destino
+                    int count;
+                    while((count = origin.read(data, 0, BUFFER_SIZE)) != -1)
+                    {
+                        out.write(data, 0, count);
+                    }
+                    // Cerramos el archivo origen, ya enviado a comprimir
+                    origin.close();
+                    progressBar.setValue((int) (++i * 100.0) / N);
+                }
+                // Cerramos el archivo zip
+                out.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
             return null;
         }
-        
-        
-        
     }
     
     /**
