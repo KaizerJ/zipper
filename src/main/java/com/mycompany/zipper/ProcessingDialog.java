@@ -13,6 +13,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
 
     private List<String> inputFilenames;
     private String outputFilename;
+    private final String folderPath;
     
     class FileZipper extends SwingWorker<Void, Void> {
 
@@ -34,7 +35,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
                 int i = 0;
                 int N = inputFilenames.size();
                 for (String filename : inputFilenames) {
-                    FileInputStream fi = new FileInputStream(filename);
+                    FileInputStream fi = new FileInputStream(folderPath + "\\" + filename);
                     origin = new BufferedInputStream(fi, BUFFER_SIZE);
                     ZipEntry entry = new ZipEntry( filename );
                     out.putNextEntry( entry );
@@ -47,6 +48,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
                     // Cerramos el archivo origen, ya enviado a comprimir
                     origin.close();
                     progressBar.setValue((int) (++i * 100.0) / N);
+                    Thread.sleep(100);
                 }
                 // Cerramos el archivo zip
                 out.close();
@@ -55,18 +57,32 @@ public class ProcessingDialog extends javax.swing.JDialog {
             }
             return null;
         }
+        
+        @Override
+        protected void done(){
+            ProcessingDialog.this.dispose();
+        }
     }
     
     /**
      * Creates new form ProcessingDialog
      */
-    public ProcessingDialog(java.awt.Frame parent, boolean modal,
+    public ProcessingDialog(java.awt.Frame parent, boolean modal, String folderPath,
             List<String> inputFilenames, String outputFilename) {
         super(parent, modal);
         initComponents();
         
+        this.folderPath = folderPath;
         this.inputFilenames = inputFilenames;
-        this.outputFilename = outputFilename;
+        // ensures that the output file has .zip extension
+        if(outputFilename.endsWith(".zip")){
+            this.outputFilename = outputFilename;
+        } else {
+            this.outputFilename = outputFilename + ".zip";
+        }
+        
+        this.setVisible(true);
+        new FileZipper().execute();
     }
 
     /**

@@ -3,10 +3,14 @@ package com.mycompany.zipper;
 import java.io.File;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainFrame extends javax.swing.JFrame {
 
     private JFileChooser fc;
+    private File openFolder;
     
     /**
      * Creates new form MainFrame
@@ -29,15 +33,32 @@ public class MainFrame extends javax.swing.JFrame {
         filesListScrollPane = new javax.swing.JScrollPane();
         filesList = new javax.swing.JList<>();
         compressButton = new javax.swing.JButton();
+        filesLabel = new javax.swing.JLabel();
+        folderLabel = new javax.swing.JLabel();
+        openFolderPathTextField = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         filesMenu = new javax.swing.JMenu();
         openFolderMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Zipper");
 
         filesListScrollPane.setViewportView(filesList);
 
         compressButton.setText("Comprimir");
+        compressButton.setEnabled(false);
+        compressButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                compressButtonActionPerformed(evt);
+            }
+        });
+
+        filesLabel.setText("Ficheros");
+
+        folderLabel.setText("Carpeta seleccionada");
+
+        openFolderPathTextField.setEditable(false);
+        openFolderPathTextField.setText("Abre una carpeta en Ficheros > Abrir carpeta");
 
         filesMenu.setText("Ficheros");
 
@@ -60,15 +81,27 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                    .addComponent(compressButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                    .addComponent(compressButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(filesLabel)
+                            .addComponent(folderLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(openFolderPathTextField))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addComponent(folderLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(openFolderPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(filesLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(compressButton)
                 .addGap(16, 16, 16))
@@ -86,11 +119,46 @@ public class MainFrame extends javax.swing.JFrame {
         int result = fc.showOpenDialog(this);
         
         if( result == JFileChooser.APPROVE_OPTION ){
-            File folder = fc.getSelectedFile();
-            folder.listFiles( (file) -> file.isFile());
+            openFolder = fc.getSelectedFile();
+            File[] files = openFolder.listFiles( (file) -> file.isFile());
             
+            this.openFolderPathTextField.setText(openFolder.getAbsolutePath());
+            
+            DefaultListModel<String> listModel = (DefaultListModel) this.filesList.getModel();
+            listModel.removeAllElements();
+            for (File file : files) {
+                listModel.addElement(file.getName());
+            }
+            
+            this.compressButton.setEnabled(true);
         }
     }//GEN-LAST:event_openFolderMenuItemActionPerformed
+
+    private void compressButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compressButtonActionPerformed
+        
+        if(filesList.getSelectedIndex() != -1){
+            fc.setDialogTitle("Seleccione fichero de destino");
+            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            // enable the "All files" option.
+            fc.setAcceptAllFileFilterUsed(false);
+            fc.setFileFilter(new FileNameExtensionFilter("Comprimido ZIP", "zip"));
+
+            int result = fc.showSaveDialog(this);
+
+            if( result == JFileChooser.APPROVE_OPTION ){
+                String outputFile = fc.getSelectedFile().getAbsolutePath();
+
+                new ProcessingDialog(this, false, openFolder.getAbsolutePath(), 
+                        this.filesList.getSelectedValuesList(), outputFile);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, 
+                                         "Ningún fichero seleccionado", 
+                                         "Error de selección de ficheros", 
+                                         JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_compressButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -102,12 +170,8 @@ public class MainFrame extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
+            javax.swing.UIManager.setLookAndFeel(
+                    javax.swing.UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -129,11 +193,14 @@ public class MainFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton compressButton;
+    private javax.swing.JLabel filesLabel;
     private javax.swing.JList<String> filesList;
     private javax.swing.JScrollPane filesListScrollPane;
     private javax.swing.JMenu filesMenu;
+    private javax.swing.JLabel folderLabel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openFolderMenuItem;
+    private javax.swing.JTextField openFolderPathTextField;
     // End of variables declaration//GEN-END:variables
 
     private void initList() {
