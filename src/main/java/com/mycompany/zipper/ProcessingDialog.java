@@ -2,6 +2,7 @@ package com.mycompany.zipper;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
     private List<String> inputFilenames;
     private String outputFilename;
     private final String folderPath;
+    private final FileZipper fileZipperWorker;
     
     class FileZipper extends SwingWorker<Void, Void> {
 
@@ -48,7 +50,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
                     // Cerramos el archivo origen, ya enviado a comprimir
                     origin.close();
                     progressBar.setValue((int) (++i * 100.0) / N);
-                    Thread.sleep(100);
+                    //Thread.sleep(100);
                 }
                 // Cerramos el archivo zip
                 out.close();
@@ -82,7 +84,8 @@ public class ProcessingDialog extends javax.swing.JDialog {
         }
         
         this.setVisible(true);
-        new FileZipper().execute();
+        this.fileZipperWorker = new FileZipper();
+        this.fileZipperWorker.execute();
     }
 
     /**
@@ -102,6 +105,11 @@ public class ProcessingDialog extends javax.swing.JDialog {
         progressBar.setStringPainted(true);
 
         cancelButton.setText("Cancelar");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,6 +137,10 @@ public class ProcessingDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.fileZipperWorker.cancel(true);
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

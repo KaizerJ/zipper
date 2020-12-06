@@ -142,6 +142,8 @@ public class MainFrame extends javax.swing.JFrame {
             // enable the "All files" option.
             fc.setAcceptAllFileFilterUsed(false);
             fc.setFileFilter(new FileNameExtensionFilter("Comprimido ZIP", "zip"));
+            
+            fc.setSelectedFile(new File(openFolder.getAbsolutePath() + ".zip"));
 
             int result = fc.showSaveDialog(this);
 
