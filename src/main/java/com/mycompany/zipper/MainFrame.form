@@ -51,6 +51,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="filesListScrollPane" pref="280" max="32767" attributes="0"/>
                   <Component id="compressButton" max="32767" attributes="0"/>
+                  <Component id="openFolderPathTextField" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="filesLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -58,7 +59,11 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="openFolderPathTextField" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jonayLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="samuelLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -74,10 +79,15 @@
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="filesLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="filesListScrollPane" pref="260" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+              <Component id="filesListScrollPane" pref="250" max="32767" attributes="0"/>
+              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="compressButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jonayLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="samuelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -125,6 +135,16 @@
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
         <Property name="text" type="java.lang.String" value="Abre una carpeta en Ficheros &gt; Abrir carpeta"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jonayLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Jonay Su&#xe1;rez Ram&#xed;rez"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="samuelLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Samuel Trujillo Santana"/>
       </Properties>
     </Component>
   </SubComponents>

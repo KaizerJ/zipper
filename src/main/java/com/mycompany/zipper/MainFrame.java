@@ -36,6 +36,8 @@ public class MainFrame extends javax.swing.JFrame {
         filesLabel = new javax.swing.JLabel();
         folderLabel = new javax.swing.JLabel();
         openFolderPathTextField = new javax.swing.JTextField();
+        jonayLabel = new javax.swing.JLabel();
+        samuelLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         filesMenu = new javax.swing.JMenu();
         openFolderMenuItem = new javax.swing.JMenuItem();
@@ -60,6 +62,10 @@ public class MainFrame extends javax.swing.JFrame {
         openFolderPathTextField.setEditable(false);
         openFolderPathTextField.setText("Abre una carpeta en Ficheros > Abrir carpeta");
 
+        jonayLabel.setText("Jonay Suárez Ramírez");
+
+        samuelLabel.setText("Samuel Trujillo Santana");
+
         filesMenu.setText("Ficheros");
 
         openFolderMenuItem.setText("Abrir carpeta");
@@ -83,12 +89,16 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                     .addComponent(compressButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(openFolderPathTextField)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(filesLabel)
                             .addComponent(folderLabel))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(openFolderPathTextField))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jonayLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(samuelLabel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -101,10 +111,14 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(filesLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(filesListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(compressButton)
-                .addGap(16, 16, 16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jonayLabel)
+                    .addComponent(samuelLabel))
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -200,9 +214,11 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane filesListScrollPane;
     private javax.swing.JMenu filesMenu;
     private javax.swing.JLabel folderLabel;
+    private javax.swing.JLabel jonayLabel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openFolderMenuItem;
     private javax.swing.JTextField openFolderPathTextField;
+    private javax.swing.JLabel samuelLabel;
     // End of variables declaration//GEN-END:variables
 
     private void initList() {
