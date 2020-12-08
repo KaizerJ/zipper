@@ -116,6 +116,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Comprimiendo ficheros");
 
         progressBar.setStringPainted(true);
 
