@@ -164,8 +164,11 @@ public class MainFrame extends javax.swing.JFrame {
             if( result == JFileChooser.APPROVE_OPTION ){
                 String outputFile = fc.getSelectedFile().getAbsolutePath();
 
-                new ProcessingDialog(this, false, openFolder.getAbsolutePath(), 
+                ProcessingDialog p = new ProcessingDialog(this, false, 
+                        openFolder.getAbsolutePath(), 
                         this.filesList.getSelectedValuesList(), outputFile);
+                
+                p.process();
             }
         } else {
             JOptionPane.showMessageDialog(this, 

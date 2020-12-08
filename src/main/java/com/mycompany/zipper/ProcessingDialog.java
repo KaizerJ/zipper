@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.*;
+import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 
 
@@ -18,7 +19,7 @@ public class ProcessingDialog extends javax.swing.JDialog {
     private List<String> inputFilenames;
     private String outputFilename;
     private final String folderPath;
-    private final FileZipper fileZipperWorker;
+    private FileZipper fileZipperWorker;
     
     class FileZipper extends SwingWorker<Void, Void> {
 
@@ -75,7 +76,17 @@ public class ProcessingDialog extends javax.swing.JDialog {
         @Override
         protected void done(){
             if(this.isCancelled()){
-                new File(ProcessingDialog.this.outputFilename).delete();
+                File outFile = new File(ProcessingDialog.this.outputFilename);
+                while(!outFile.delete()){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {}
+                }
+            } else {
+                JOptionPane.showMessageDialog(ProcessingDialog.this, 
+                                         "Compresión realizada con éxito", 
+                                         "Compresión correcta", 
+                                         JOptionPane.INFORMATION_MESSAGE);
             }
             ProcessingDialog.this.dispose();
         }
@@ -97,7 +108,9 @@ public class ProcessingDialog extends javax.swing.JDialog {
         } else {
             this.outputFilename = outputFilename + ".zip";
         }
-        
+    }
+    
+    public void process(){
         this.setVisible(true);
         this.fileZipperWorker = new FileZipper();
         this.fileZipperWorker.execute();
