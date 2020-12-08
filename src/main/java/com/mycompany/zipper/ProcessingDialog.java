@@ -5,7 +5,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.*;
 import javax.swing.SwingWorker;
 
@@ -21,15 +24,17 @@ public class ProcessingDialog extends javax.swing.JDialog {
 
         private final static int BUFFER_SIZE = 4096;
         
+        // Objeto para referenciar a los archivos que queremos comprimir
+        private BufferedInputStream origin = null;
+        // Objeto para referenciar el archivo zip de salida
+        private ZipOutputStream out = null;
+        
         @Override
         protected Void doInBackground() throws Exception {
-            // Objeto para referenciar el archivo zip de salida
-            try (ZipOutputStream out = new ZipOutputStream(
+            try {
+                out = new ZipOutputStream(
                     new BufferedOutputStream(
-                            new FileOutputStream(outputFilename)))) 
-            {
-                // Objeto para referenciar a los archivos que queremos comprimir
-                BufferedInputStream origin = null;
+                            new FileOutputStream(outputFilename)));
 
                 // Buffer de transferencia para almacenar datos a comprimir
                 byte[] data = new byte[BUFFER_SIZE];
@@ -45,23 +50,33 @@ public class ProcessingDialog extends javax.swing.JDialog {
                     int count;
                     while((count = origin.read(data, 0, BUFFER_SIZE)) != -1)
                     {
+                        if(this.isCancelled()){
+                            origin.close();
+                            out.close();
+                            return null;
+                        }
                         out.write(data, 0, count);
                     }
                     // Cerramos el archivo origen, ya enviado a comprimir
                     origin.close();
                     progressBar.setValue((int) (++i * 100.0) / N);
-                    //Thread.sleep(100);
                 }
+                
+            } catch (IOException e){
+                e.printStackTrace();
+            } finally {
                 // Cerramos el archivo zip
                 out.close();
-            } catch (Exception e){
-                e.printStackTrace();
+                origin.close();
             }
             return null;
         }
         
         @Override
         protected void done(){
+            if(this.isCancelled()){
+                new File(ProcessingDialog.this.outputFilename).delete();
+            }
             ProcessingDialog.this.dispose();
         }
     }
